@@ -115,8 +115,23 @@ def get_monuments():
 @app.route('/getmoney', methods = ["GET"])
 @token_required
 def get_money(user):
-    print(user)
     return jsonify({"success": True, "message": "Balance retrieved successfully", "data" : {"balance" : user['money']}}), 200
+
+@app.route('/addmoney', methods = ['PUT'])
+@token_required
+def add_money(user):
+    try: 
+        amt = request.json['amount']
+    except: 
+        return jsonify({"success": False, "message": "Invalid fields"}), 201
+    phone = user['phone']
+    updatedBalance = user['money'] + amt
+    try:
+        addMoney(updatedBalance, phone)
+    except:
+        return jsonify({"success": False, "message": "Sql error"}), 201
+    
+    return jsonify({"success": True, "message": "Balance updated successfully", "data" : {"balance" : updatedBalance}}), 200
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

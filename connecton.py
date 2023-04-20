@@ -46,8 +46,8 @@ def getUser(phone):
         "name": user[0],
         "money": user[1],
         "age": user[2],
-        "id": user[4],
-        "phone": user[5]
+        "id": user[3],
+        "phone": user[4]
     }
     mydb.commit()
     mycursor.close()
@@ -99,3 +99,17 @@ def getMonuments():
     mycursor.close()
     mydb.close()
     return monumentList
+
+def addMoney(money, phone):
+    mydb = mysql.connector.connect(
+        host="containers-us-west-137.railway.app",
+        user="root",
+        password="KK1JadM51ULeSNrI0NG2",
+        database="railway",
+        port=6503
+    )
+    mycursor = mydb.cursor()
+    mycursor.execute(f"update users set money = {money} where phone = {phone}")
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
