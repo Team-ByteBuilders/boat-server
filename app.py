@@ -7,42 +7,43 @@ import json
 app = Flask(__name__)
 cors = CORS(app)
 
+
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
 
-@app.route('/checkuser', methods = ["POST"])
+
+@app.route('/checkuser', methods=["POST"])
 def check_user():
     try:
         phone = request.json['phone']
     except:
         return jsonify({"success": False, "message": "Invalid fields"}), 201
-    
+
     user = getUser(phone)
     if user:
-        return jsonify({"success": True, "message": "User Already Exists", "data" : True}), 200
+        return jsonify({"success": True, "message": "User Already Exists", "data": True}), 200
     else:
-        return jsonify({"success": True, "message": "User does not exists", "data" : False}), 200
+        return jsonify({"success": True, "message": "User does not exists", "data": False}), 200
 
-@app.route('/login', methods = ["POST"])
+
+@app.route('/login', methods=["POST"])
 def loginUser():
     try:
         phone = request.json['phone']
         otp = request.json['otp']
     except:
         return jsonify({"success": False, "message": "Invalid fields"}), 201
-    
+
     # print(phone)
     # print(otp)
     user = getUser(phone)
     if not user:
         return jsonify({"success": False, "message": "User does not exists"}), 201
     id = user['id']
-    print(user)
-    print(id)
-    token = createToken(id)
+    token = createToken(phone)
 
-    return jsonify({"success": True, "message" : "Data received", "token" : token, "data" : user}), 200
+    return jsonify({"success": True, "message": "Data received", "token": token, "data": user}), 200
 
 
 @app.route('/addmonument', methods=["POST"])
@@ -63,6 +64,33 @@ def add_monument():
         return jsonify({"success": True, "message": "Monument added successfully"}), 200
     except:
         return jsonify({"success": False, "message": "sql error"}), 201
+
+
+@app.route('/signup', methods=["POST"])
+def signup():
+    try:
+        name = request.json['name']
+        age = request.json['age']
+        face = request.files['image']
+        phone = request.json['phone']
+    except:
+        return jsonify({"success": False, "message": "Invalid fields"}), 201
+
+    # print(phone)
+    # print(otp)
+    user = {
+        name: name,
+        age: age,
+        face: face,
+        phone: phone
+    }
+    if user:
+        return jsonify({"success": False, "message": "User exists"}), 201
+
+    addUser(name, age, face, phone)
+    token = createToken(phone)
+
+    return jsonify({"success": True, "message": "Data received", "token": token, "data": user}), 200
 
 
 if __name__ == "__main__":
