@@ -1,6 +1,6 @@
 import mysql.connector
 import face_recognition
-# import cv2
+
 import numpy as np
 import pickle
 
@@ -33,8 +33,9 @@ def getUser(phone):
     try:
         mycursor.execute(f"select * from users where phone = {phone}")
     except:
+        print("entered except")
         return None
-    
+
     user = None
     for x in mycursor:
         user = x
@@ -64,8 +65,9 @@ def addUser(name, age, face, phone):
     )
     mycursor = mydb.cursor()
     enconding = face_recognition.face_encodings(face)[0]
+    fEnconding = pickle.dumps(enconding)
     mycursor.execute(
-        f"insert into users ( name, money, age, faceData, phone) values('{name}', 0, {age}, '{enconding}', {phone})")
+        f"insert into users ( name, money, age, faceData, phone) values('{name}', 0, {age}, '{fEnconding}', {phone})")
     mydb.commit()
     mycursor.close()
     mydb.close()
@@ -85,12 +87,12 @@ def getMonuments():
     monumentList = []
     for x in mycursor:
         monument = {
-            "name" : x[0],
-            "details" : x[1],
-            "fees" : x[2],
-            "image" : x[3],
-            "lat" : x[4],
-            "long" : x[5]
+            "name": x[0],
+            "details": x[1],
+            "fees": x[2],
+            "image": x[3],
+            "lat": x[4],
+            "long": x[5]
         }
         monumentList.append(monument)
     mydb.commit()

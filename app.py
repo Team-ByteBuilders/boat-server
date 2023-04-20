@@ -3,6 +3,7 @@ from connecton import *
 from jwt_token import *
 from flask_cors import CORS
 import json
+from werkzeug.datastructures import ImmutableMultiDict
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -40,13 +41,13 @@ def loginUser():
     user = getUser(phone)
     if not user:
         return jsonify({"success": False, "message": "User does not exists"}), 201
-    
-    if(otp != '1234'):
+
+    if (otp != '1234'):
         return jsonify({"success": False, "message": "Wrong OTP"}), 201
     id = user['id']
     token = createToken(phone)
 
-    return jsonify({"success": True, "message": "Data received", "token": token, "data": user}), 200
+    return jsonify({"success": True, "message": "Login Successful", "token": token, "data": user}), 200
 
 
 @app.route('/addmonument', methods=["POST"])
@@ -74,11 +75,13 @@ def add_monument():
 
 @app.route('/signup', methods=["POST"])
 def signup():
+    data = dict(request.form)
+    print(data)
     try:
-        name = request.json['name']
-        age = request.json['age']
+        name = data.get['name']
+        age = data.get['age']
         face = request.files['image']
-        phone = request.json['phone']
+        phone = data.get['phone']
     except:
         return jsonify({"success": False, "message": "Invalid fields"}), 201
 
