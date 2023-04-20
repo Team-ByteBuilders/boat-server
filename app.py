@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify
 from connecton import addMonument
+from jwt_token import *
+from functools import wraps
+
 app = Flask(__name__)
 
 
@@ -7,6 +10,15 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello, World!'
 
+@app.route('/checkuser', methods = ["POST"])
+def check_user():
+    try:
+        phone = request.json['phone']
+    except:
+        return jsonify({"success": False, "message": "Invalid fields"}), 201
+    
+    print(phone)
+    return jsonify({"success": True, "message": "Phone received"}), 200
 
 @app.route('/addmonument', methods=["POST"])
 def add_monument():
