@@ -5,6 +5,7 @@ from functools import wraps
 
 secret = "thisisasecret"
 
+
 def token_required(f):
     @wraps(f)
     def decorated():
@@ -13,17 +14,18 @@ def token_required(f):
             token = request.headers['Authorization']
 
         if not token:
-            return jsonify({"success" : False, "message" : "Auth Token missing"}), 201
-        
+            return jsonify({"success": False, "message": "Auth Token missing"}), 201
+
         print(token)
-        return jsonify({"success" : True, "message" : "Auth Token received"}), 200
+        return jsonify({"success": True, "message": "Auth Token received"}), 200
 
     return decorated
 
+
 def createToken(id):
     jwtToken = jwt.encode({
-        'public_id' : id,
-        'exp' : datetime.utcnow()
+        'phone': id,
+        'exp': datetime.utcnow()
     }, secret)
 
     return jwtToken
