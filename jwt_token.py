@@ -1,6 +1,9 @@
 import jwt
 from flask import Flask, request, jsonify
+from datetime import datetime, timedelta
 from functools import wraps
+
+secret = "thisisasecret"
 
 def token_required(f):
     @wraps(f)
@@ -16,3 +19,11 @@ def token_required(f):
         return jsonify({"success" : True, "message" : "Auth Token received"}), 200
 
     return decorated
+
+def createToken(id):
+    jwtToken = jwt.encode({
+        'public_id' : id,
+        'exp' : datetime.utcnow()
+    }, secret)
+
+    return jwtToken
