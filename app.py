@@ -4,6 +4,7 @@ from jwt_token import *
 from flask_cors import CORS
 import json
 from werkzeug.datastructures import ImmutableMultiDict
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -76,32 +77,30 @@ def add_monument():
 @app.route('/signup', methods=["POST"])
 def signup():
     data = dict(request.form)
-    print(data)
     try:
-        name = data.get['name']
-        age = data.get['age']
-        face = request.files['image']
-        phone = data.get['phone']
+        name = data.get('name')
+        age = data.get('age')
+        phone = data.get('phone')
+        face = request.files['file']
     except:
         return jsonify({"success": False, "message": "Invalid fields"}), 201
-
-    # print(phone)
-    # print(otp)
+    try:
+        face.save(secure_filename(face.filename))
+    except:
+        pass
     user = {
         name: name,
         age: age,
-        face: face,
         phone: phone
     }
-    if user:
-        return jsonify({"success": False, "message": "User exists"}), 201
 
-    addUser(name, age, face, phone)
+    addUser(name, age, phone)
     token = createToken(phone)
 
-    return jsonify({"success": True, "message": "Data received", "token": token, "data": user}), 200
+    return jsonify({"success": True, "message": "Signup successful", "token": token, "data": {name: name, age: age, phone: phone}}), 200
 
-@app.route('/getallmonuments', methods = ["POST"])
+
+@app.route('/getallmonuments', methods=["POST"])
 def get_monuments():
     # try:
     #     lat = request.json['lat']
@@ -109,11 +108,7 @@ def get_monuments():
     # except:
     #     return jsonify({"success": False, "message": "Invalid fields"}), 201
     list = getMonuments()
-    print(list)
-    return jsonify({"success": True, "message": "Data retrieved successfully", "data" : list}), 200
-
-
-    
+    return jsonify({"success": True, "message": "Data retrieved successfully", "data": list}), 200
 
 
 if __name__ == "__main__":

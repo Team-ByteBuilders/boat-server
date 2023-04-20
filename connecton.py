@@ -1,8 +1,4 @@
 import mysql.connector
-import face_recognition
-
-import numpy as np
-import pickle
 
 
 def addMonument(name, details, fees, image_url, lat, lon):
@@ -55,7 +51,8 @@ def getUser(phone):
     return UserDetails
 
 
-def addUser(name, age, face, phone):
+def addUser(name, age, phone):
+
     mydb = mysql.connector.connect(
         host="containers-us-west-137.railway.app",
         user="root",
@@ -64,10 +61,8 @@ def addUser(name, age, face, phone):
         port=6503
     )
     mycursor = mydb.cursor()
-    enconding = face_recognition.face_encodings(face)[0]
-    fEnconding = pickle.dumps(enconding)
     mycursor.execute(
-        f"insert into users ( name, money, age, faceData, phone) values('{name}', 0, {age}, '{fEnconding}', {phone})")
+        f"insert into users ( name, money, age, phone) values('{name}', 0, {age},  {phone})")
     mydb.commit()
     mycursor.close()
     mydb.close()
