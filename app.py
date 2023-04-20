@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
 from connecton import *
 from jwt_token import *
+from flask_cors import CORS
 import json
 
 app = Flask(__name__)
+cors = CORS(app)
 
 @app.route('/')
 def hello_world():
