@@ -16,10 +16,8 @@ def token_required(f):
         if not token:
             return jsonify({"success": False, "message": "Auth Token missing"}), 201
 
-        print(token)
         token = str.replace(str(token), 'Bearer ', '')
         data = jwt.decode(token, secret, algorithms=['HS256'])
-        print(data['phone'])
         user = getUser(data['phone'])
         return f(user, *args, **kwargs)
 
