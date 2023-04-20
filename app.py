@@ -108,6 +108,32 @@ def get_monuments():
     # except:
     #     return jsonify({"success": False, "message": "Invalid fields"}), 201
     list = getMonuments()
+    print(list)
+    return jsonify({"success": True, "message": "Data retrieved successfully", "data": list}), 200
+
+
+@app.route('/getmoney', methods=["GET"])
+@token_required
+def get_money(user):
+    return jsonify({"success": True, "message": "Balance retrieved successfully", "data": {"balance": user['money']}}), 200
+
+
+@app.route('/addmoney', methods=['PUT'])
+@token_required
+def add_money(user):
+    try:
+        amt = request.json['amount']
+    except:
+        return jsonify({"success": False, "message": "Invalid fields"}), 201
+    phone = user['phone']
+    updatedBalance = user['money'] + amt
+    try:
+        addMoney(updatedBalance, phone)
+    except:
+        return jsonify({"success": False, "message": "Sql error"}), 201
+
+    return jsonify({"success": True, "message": "Balance updated successfully", "data": {"balance": updatedBalance}}), 200
+
     return jsonify({"success": True, "message": "Data retrieved successfully", "data": list}), 200
 
 
