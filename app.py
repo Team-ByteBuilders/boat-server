@@ -37,6 +37,9 @@ def loginUser():
     user = getUser(phone)
     if not user:
         return jsonify({"success": False, "message": "User does not exists"}), 201
+    
+    if(otp != '1234'):
+        return jsonify({"success": False, "message": "Wrong OTP"}), 201
     id = user['id']
     print(user)
     print(id)
@@ -63,6 +66,9 @@ def add_monument():
         return jsonify({"success": True, "message": "Monument added successfully"}), 200
     except:
         return jsonify({"success": False, "message": "sql error"}), 201
+
+# @app.route('/getallmonuments', methods = ["POST"])
+# def get_monuments():
 
 
 if __name__ == "__main__":

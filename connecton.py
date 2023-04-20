@@ -25,7 +25,10 @@ def getUser(phone):
         port=6503
     )
     mycursor = mydb.cursor(buffered=True)
-    mycursor.execute(f"select * from users where phone = {phone}")
+    try:
+        mycursor.execute(f"select * from users where phone = {phone}")
+    except:
+        return None
     
     user = None
     for x in mycursor:
