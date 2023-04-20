@@ -112,9 +112,11 @@ def get_monuments():
     print(list)
     return jsonify({"success": True, "message": "Data retrieved successfully", "data" : list}), 200
 
-
-    
-
+@app.route('/getmoney', methods = ["GET"])
+@token_required
+def get_money(user):
+    print(user)
+    return jsonify({"success": True, "message": "Balance retrieved successfully", "data" : {"balance" : user['money']}}), 200
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
