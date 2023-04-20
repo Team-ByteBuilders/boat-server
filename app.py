@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
 from connecton import *
 from jwt_token import *
-from functools import wraps
+import json
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def hello_world():
@@ -17,12 +16,32 @@ def check_user():
     except:
         return jsonify({"success": False, "message": "Invalid fields"}), 201
     
-    result = checkUser(phone)
-    print(phone)
-    if result:
+    user = getUser(phone)
+    if user:
         return jsonify({"success": True, "message": "User Already Exists", "data" : True}), 200
     else:
         return jsonify({"success": True, "message": "User does not exists", "data" : False}), 200
+
+@app.route('/login', methods = ["POST"])
+def loginUser():
+    try:
+        phone = request.json['phone']
+        otp = request.json['otp']
+    except:
+        return jsonify({"success": False, "message": "Invalid fields"}), 201
+    
+    # print(phone)
+    # print(otp)
+    user = getUser(phone)
+    if not user:
+        return jsonify({"success": False, "message": "User does not exists"}), 201
+    id = user['id']
+    print(user)
+    print(id)
+    token = createToken(id)
+
+    return jsonify({"success": True, "message" : "Data received", "token" : token, "data" : user}), 200
+
 
 @app.route('/addmonument', methods=["POST"])
 def add_monument():
