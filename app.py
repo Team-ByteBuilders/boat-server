@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
+from connecton import addMonument
 app = Flask(__name__)
+
 
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
+
 
 @app.route('/addmonument', methods=["POST"])
 def add_monument():
@@ -15,15 +18,15 @@ def add_monument():
         coor_lat = request.json['lat']
         coor_long = request.json['long']
     except:
-        return jsonify({"success" : False, "message" : "Invalid fields"})
-    print(monument_details)
-    print(monument_name)
-    print(registration_fees)
-    print(image_url)
-    print(coor_lat)
-    print(coor_long)
+        return jsonify({"success": False, "message": "Invalid fields"}), 201
 
-    return jsonify({"success" : True, "message" : "Monument added successfully"})
+    try:
+        addMonument(monument_name, monument_details,
+                    registration_fees, image_url, coor_lat, coor_long)
+        return jsonify({"success": True, "message": "Monument added successfully"}), 200
+    except:
+        return jsonify({"success": False, "message": "sql error"}), 201
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
