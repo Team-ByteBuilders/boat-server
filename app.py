@@ -98,6 +98,20 @@ def signup():
 
     return jsonify({"success": True, "message": "Data received", "token": token, "data": user}), 200
 
+@app.route('/getallmonuments', methods = ["POST"])
+def get_monuments():
+    # try:
+    #     lat = request.json['lat']
+    #     long = request.json['long']
+    # except:
+    #     return jsonify({"success": False, "message": "Invalid fields"}), 201
+    list = getMonuments()
+    print(list)
+    return jsonify({"success": True, "message": "Data retrieved successfully", "data" : list}), 200
+
+
+    
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
