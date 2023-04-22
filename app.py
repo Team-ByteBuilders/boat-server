@@ -137,5 +137,22 @@ def add_money(user):
     return jsonify({"success": True, "message": "Data retrieved successfully", "data": list}), 200
 
 
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    data = dict(request.form)
+    try:
+        name = data.get('name')
+        print(name)
+        image = request.files['file']
+        print(image.filename)
+    except:
+        return jsonify({"success": False, "message": "Invalid fields"}), 201
+    try:
+        image.save(name + ".jpg")
+    except:
+        pass
+    return jsonify({"success": True, "message": " successful", }), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
